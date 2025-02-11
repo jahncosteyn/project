@@ -16,40 +16,23 @@
 <body>
     <h2>Project Ranking App</h2>
     <div>
-        <select id="name">
+        <select id="name" onchange="updateGroupsAndProjects()">
+            <option value="">Select Lecturer</option>
+            <option value="Prof Wimpie Odendaal">Prof Wimpie Odendaal</option>
             <option value="Prof Ian Craig">Prof Ian Craig</option>
             <option value="Prof Derik le Roux">Prof Derik le Roux</option>
-            <option value="Dr Fernando Camisani">Dr Fernando Camisani</option>
             <option value="Dr Jacques van Wyk">Dr Jacques van Wyk</option>
             <option value="Prof Pieter de Villiers">Prof Pieter de Villiers</option>
-            <option value="Dr Filip Paluncic">Dr Filip Paluncic</option>
-            <option value="Prof Sunil Maharaj">Prof Sunil Maharaj</option>
-            <option value="Prof Johan Hanekom">Prof Johan Hanekom</option>
-            <option value="Prof Tania Hanekom">Prof Tania Hanekom</option>
-            <option value="Dr Johan Schoeman">Dr Johan Schoeman</option>
-            <option value="Prof Trudi Joubert">Prof Trudi Joubert</option>
-            <option value="Prof Tinus Stander">Prof Tinus Stander</option>
-            <option value="Dr Heinrich Laue">Dr Heinrich Laue</option>
-            <option value="Mr Dirk de Beer">Mr Dirk de Beer</option>
-            <option value="Prof Wimpie Odendaal">Prof Wimpie Odendaal</option>
-            <option value="Prof Warren du Plessis">Prof Warren du Plessis</option>
-            <option value="Mr Christo Fourie">Mr Christo Fourie</option>
-            <option value="Prof Herman Myburgh">Prof Herman Myburgh</option>
-            <option value="Prof Pieter Jacobs">Prof Pieter Jacobs</option>
-            <option value="Dr Allan De Freitas">Dr Allan De Freitas</option>
-            <option value="Mr Kealeboga Mokise">Mr Kealeboga Mokise</option>
         </select>
         
         <select id="group">
-            <option value="Control systems">Control systems</option>
-            <option value="Signals, information fusion and communications">Signals, information fusion and communications</option>
-            <option value="Bioengineering">Bioengineering</option>
-            <option value="Electronics and microelectronics">Electronics and microelectronics</option>
-            <option value="Microwaves and antennas">Microwaves and antennas</option>
-            <option value="Smart sensing and intelligent systems">Smart sensing and intelligent systems</option>
+            <option value="">Select Research Group</option>
         </select>
         
-        <input type="text" id="project" placeholder="Project Name">
+        <select id="project">
+            <option value="">Select Project</option>
+        </select>
+        
         <input type="number" id="enjoyment" placeholder="Enjoyment (1-10)">
         <input type="number" id="difficulty" placeholder="Difficulty (1-10)">
         <input type="number" id="cost" placeholder="Cost (1-10)">
@@ -78,6 +61,58 @@
 
     <script>
         let entries = [];
+        
+        const lecturerData = {
+            "Prof Wimpie Odendaal": {
+                group: "Microwaves and Antennas",
+                projects: [
+                    "A linear dual polarized beamforming antenna array",
+                    "A switched beam linear antenna array",
+                    "A wideband complementary antenna array with beam scanning",
+                    "A circular polarized antenna array",
+                    "Tapered slot antenna with lens",
+                    "Near field reference antenna",
+                    "A directional dual polarized low profile wideband antenna array",
+                    "A wideband dual polarized probe for near field measurements",
+                    "MIMO antenna array with pattern diversity",
+                    "A low profile omnidirectional indoor antenna"
+                ]
+            },
+            "Prof Ian Craig": {
+                group: "Control Systems",
+                projects: ["Project A", "Project B"]
+            },
+            "Prof Derik le Roux": {
+                group: "Control Systems",
+                projects: ["Project C", "Project D"]
+            },
+            "Dr Jacques van Wyk": {
+                group: "Signals, Information Fusion and Communications",
+                projects: ["Project E", "Project F"]
+            },
+            "Prof Pieter de Villiers": {
+                group: "Signals, Information Fusion and Communications",
+                projects: ["Project G", "Project H"]
+            }
+        };
+        
+        function updateGroupsAndProjects() {
+            const lecturer = document.getElementById('name').value;
+            const groupSelect = document.getElementById('group');
+            const projectSelect = document.getElementById('project');
+            
+            groupSelect.innerHTML = '<option value="">Select Research Group</option>';
+            projectSelect.innerHTML = '<option value="">Select Project</option>';
+            
+            if (lecturer && lecturerData[lecturer]) {
+                const group = lecturerData[lecturer].group;
+                groupSelect.innerHTML += `<option value="${group}">${group}</option>`;
+                
+                lecturerData[lecturer].projects.forEach(project => {
+                    projectSelect.innerHTML += `<option value="${project}">${project}</option>`;
+                });
+            }
+        }
 
         function addEntry() {
             const name = document.getElementById('name').value;
@@ -87,7 +122,7 @@
             const difficulty = parseInt(document.getElementById('difficulty').value) || 0;
             const cost = parseInt(document.getElementById('cost').value) || 0;
             
-            const score = (3*enjoyment - 1.5*difficulty - 0.5*cost)/(3*10 - 2*10 - 0.5*10)*100;
+            const score = (3 * enjoyment - 1.5 * difficulty - 0.5 * cost) / (3 * 10 - 2 * 10 - 0.5 * 10) * 100;
             
             entries.push({ name, group, project, enjoyment, difficulty, cost, score });
             updateTable();
@@ -105,7 +140,7 @@
                     <td>${entry.enjoyment}</td>
                     <td>${entry.difficulty}</td>
                     <td>${entry.cost}</td>
-                    <td>${entry.score}</td>
+                    <td>${entry.score.toFixed(2)}</td>
                 </tr>`;
             });
         }
