@@ -87,7 +87,7 @@
             const difficulty = parseInt(document.getElementById('difficulty').value) || 0;
             const cost = parseInt(document.getElementById('cost').value) || 0;
             
-            const score = enjoyment - difficulty - cost;
+            const score = (3*enjoyment - 1.5*difficulty - 0.5*cost)/(3*10 - 2*10 - 0.5*10)*100;
             
             entries.push({ name, group, project, enjoyment, difficulty, cost, score });
             updateTable();
