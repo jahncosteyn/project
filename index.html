@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Ranking App</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        input { margin: 5px; padding: 5px; }
+        button { padding: 5px 10px; margin-top: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2>Project Ranking App</h2>
+    <div>
+        <input type="text" id="name" placeholder="Lecturer/Project Name">
+        <input type="text" id="group" placeholder="Research Group">
+        <input type="number" id="enjoyment" placeholder="Enjoyment (1-10)">
+        <input type="number" id="difficulty" placeholder="Difficulty (1-10)">
+        <input type="number" id="cost" placeholder="Cost (1-10)">
+        <button onclick="addEntry()">Add</button>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Group</th>
+                <th>Enjoyment</th>
+                <th>Difficulty</th>
+                <th>Cost</th>
+                <th>Total Score</th>
+            </tr>
+        </thead>
+        <tbody id="rankingTable"></tbody>
+    </table>
+
+    <script>
+        let entries = [];
+
+        function addEntry() {
+            const name = document.getElementById('name').value;
+            const group = document.getElementById('group').value;
+            const enjoyment = parseInt(document.getElementById('enjoyment').value) || 0;
+            const difficulty = parseInt(document.getElementById('difficulty').value) || 0;
+            const cost = parseInt(document.getElementById('cost').value) || 0;
+            
+            entries.push({ name, group, enjoyment, difficulty, cost });
+            updateTable();
+        }
+
+        function updateTable() {
+            entries.sort((a, b) => (b.enjoyment + b.difficulty + b.cost) - (a.enjoyment + a.difficulty + a.cost));
+            const table = document.getElementById('rankingTable');
+            table.innerHTML = '';
+            entries.forEach(entry => {
+                table.innerHTML += `<tr>
+                    <td>${entry.name}</td>
+                    <td>${entry.group}</td>
+                    <td>${entry.enjoyment}</td>
+                    <td>${entry.difficulty}</td>
+                    <td>${entry.cost}</td>
+                    <td>${entry.enjoyment + entry.difficulty + entry.cost}</td>
+                </tr>`;
+            });
+        }
+    </script>
+</body>
+</html>
