@@ -9,15 +9,46 @@
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         th { background-color: #f4f4f4; }
-        input { margin: 5px; padding: 5px; }
+        input, select { margin: 5px; padding: 5px; }
         button { padding: 5px 10px; margin-top: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
     <h2>Project Ranking App</h2>
     <div>
-        <input type="text" id="name" placeholder="Lecturer/Project Name">
-        <input type="text" id="group" placeholder="Research Group">
+        <select id="name">
+            <option value="Prof Ian Craig">Prof Ian Craig</option>
+            <option value="Prof Derik le Roux">Prof Derik le Roux</option>
+            <option value="Dr Fernando Camisani">Dr Fernando Camisani</option>
+            <option value="Dr Jacques van Wyk">Dr Jacques van Wyk</option>
+            <option value="Prof Pieter de Villiers">Prof Pieter de Villiers</option>
+            <option value="Dr Filip Paluncic">Dr Filip Paluncic</option>
+            <option value="Prof Sunil Maharaj">Prof Sunil Maharaj</option>
+            <option value="Prof Johan Hanekom">Prof Johan Hanekom</option>
+            <option value="Prof Tania Hanekom">Prof Tania Hanekom</option>
+            <option value="Dr Johan Schoeman">Dr Johan Schoeman</option>
+            <option value="Prof Trudi Joubert">Prof Trudi Joubert</option>
+            <option value="Prof Tinus Stander">Prof Tinus Stander</option>
+            <option value="Dr Heinrich Laue">Dr Heinrich Laue</option>
+            <option value="Mr Dirk de Beer">Mr Dirk de Beer</option>
+            <option value="Prof Wimpie Odendaal">Prof Wimpie Odendaal</option>
+            <option value="Prof Warren du Plessis">Prof Warren du Plessis</option>
+            <option value="Mr Christo Fourie">Mr Christo Fourie</option>
+            <option value="Prof Herman Myburgh">Prof Herman Myburgh</option>
+            <option value="Prof Pieter Jacobs">Prof Pieter Jacobs</option>
+            <option value="Dr Allan De Freitas">Dr Allan De Freitas</option>
+            <option value="Mr Kealeboga Mokise">Mr Kealeboga Mokise</option>
+        </select>
+        
+        <select id="group">
+            <option value="Control systems">Control systems</option>
+            <option value="Signals, information fusion and communications">Signals, information fusion and communications</option>
+            <option value="Bioengineering">Bioengineering</option>
+            <option value="Electronics and microelectronics">Electronics and microelectronics</option>
+            <option value="Microwaves and antennas">Microwaves and antennas</option>
+            <option value="Smart sensing and intelligent systems">Smart sensing and intelligent systems</option>
+        </select>
+        
         <input type="number" id="enjoyment" placeholder="Enjoyment (1-10)">
         <input type="number" id="difficulty" placeholder="Difficulty (1-10)">
         <input type="number" id="cost" placeholder="Cost (1-10)">
@@ -36,6 +67,12 @@
         </thead>
         <tbody id="rankingTable"></tbody>
     </table>
+
+    <h3>Top 16 Lecturers</h3>
+    <ul id="topLecturers"></ul>
+    
+    <h3>Top 8 Research Groups</h3>
+    <ul id="topGroups"></ul>
 
     <script>
         let entries = [];
@@ -65,6 +102,23 @@
                     <td>${entry.enjoyment + entry.difficulty + entry.cost}</td>
                 </tr>`;
             });
+            updateRankings();
+        }
+
+        function updateRankings() {
+            const lecturerCounts = {};
+            const groupCounts = {};
+            
+            entries.forEach(entry => {
+                lecturerCounts[entry.name] = (lecturerCounts[entry.name] || 0) + (entry.enjoyment + entry.difficulty + entry.cost);
+                groupCounts[entry.group] = (groupCounts[entry.group] || 0) + (entry.enjoyment + entry.difficulty + entry.cost);
+            });
+            
+            const topLecturers = Object.entries(lecturerCounts).sort((a, b) => b[1] - a[1]).slice(0, 16);
+            document.getElementById('topLecturers').innerHTML = topLecturers.map(([name, score]) => `<li>${name}: ${score}</li>`).join('');
+            
+            const topGroups = Object.entries(groupCounts).sort((a, b) => b[1] - a[1]).slice(0, 8);
+            document.getElementById('topGroups').innerHTML = topGroups.map(([group, score]) => `<li>${group}: ${score}</li>`).join('');
         }
     </script>
 </body>
