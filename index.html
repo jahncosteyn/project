@@ -49,6 +49,7 @@
             <option value="Smart sensing and intelligent systems">Smart sensing and intelligent systems</option>
         </select>
         
+        <input type="text" id="project" placeholder="Project Name">
         <input type="number" id="enjoyment" placeholder="Enjoyment (1-10)">
         <input type="number" id="difficulty" placeholder="Difficulty (1-10)">
         <input type="number" id="cost" placeholder="Cost (1-10)">
@@ -59,6 +60,7 @@
             <tr>
                 <th>Name</th>
                 <th>Group</th>
+                <th>Project</th>
                 <th>Enjoyment</th>
                 <th>Difficulty</th>
                 <th>Cost</th>
@@ -80,45 +82,32 @@
         function addEntry() {
             const name = document.getElementById('name').value;
             const group = document.getElementById('group').value;
+            const project = document.getElementById('project').value;
             const enjoyment = parseInt(document.getElementById('enjoyment').value) || 0;
             const difficulty = parseInt(document.getElementById('difficulty').value) || 0;
             const cost = parseInt(document.getElementById('cost').value) || 0;
             
-            entries.push({ name, group, enjoyment, difficulty, cost });
+            const score = enjoyment - difficulty - cost;
+            
+            entries.push({ name, group, project, enjoyment, difficulty, cost, score });
             updateTable();
         }
 
         function updateTable() {
-            entries.sort((a, b) => (b.enjoyment + b.difficulty + b.cost) - (a.enjoyment + a.difficulty + a.cost));
+            entries.sort((a, b) => b.score - a.score);
             const table = document.getElementById('rankingTable');
             table.innerHTML = '';
             entries.forEach(entry => {
                 table.innerHTML += `<tr>
                     <td>${entry.name}</td>
                     <td>${entry.group}</td>
+                    <td>${entry.project}</td>
                     <td>${entry.enjoyment}</td>
                     <td>${entry.difficulty}</td>
                     <td>${entry.cost}</td>
-                    <td>${entry.enjoyment + entry.difficulty + entry.cost}</td>
+                    <td>${entry.score}</td>
                 </tr>`;
             });
-            updateRankings();
-        }
-
-        function updateRankings() {
-            const lecturerCounts = {};
-            const groupCounts = {};
-            
-            entries.forEach(entry => {
-                lecturerCounts[entry.name] = (lecturerCounts[entry.name] || 0) + (entry.enjoyment + entry.difficulty + entry.cost);
-                groupCounts[entry.group] = (groupCounts[entry.group] || 0) + (entry.enjoyment + entry.difficulty + entry.cost);
-            });
-            
-            const topLecturers = Object.entries(lecturerCounts).sort((a, b) => b[1] - a[1]).slice(0, 16);
-            document.getElementById('topLecturers').innerHTML = topLecturers.map(([name, score]) => `<li>${name}: ${score}</li>`).join('');
-            
-            const topGroups = Object.entries(groupCounts).sort((a, b) => b[1] - a[1]).slice(0, 8);
-            document.getElementById('topGroups').innerHTML = topGroups.map(([group, score]) => `<li>${group}: ${score}</li>`).join('');
         }
     </script>
 </body>
